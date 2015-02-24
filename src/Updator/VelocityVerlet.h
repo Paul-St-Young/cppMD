@@ -14,7 +14,7 @@ public:
 			_oldA.push_back(a);
 		}
 	};
-    ~VelocityVerlet();
+    //~VelocityVerlet();
     void update();
 };
 

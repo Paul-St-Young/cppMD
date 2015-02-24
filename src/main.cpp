@@ -17,7 +17,7 @@ int main(int argc, char* argv[]){
     int n=64; // simulating 64 particles
     RealType L=4.2323167; // size of simulation box
     RealType m=48.0; // mass of the particles
-    int nsteps=100; // simulation steps
+    int nsteps=1000; // simulation steps
     RealType h=0.01; // simulation step size
     RealType sigma=1.0, epsilon=1.0; // Lennard-Jones parameters
 
