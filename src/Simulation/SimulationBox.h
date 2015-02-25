@@ -12,7 +12,7 @@ protected:
 public:
     SimulationBox(){};
     ~SimulationBox(){};
-    SimulationBox(ParticleSet* pset){_pset=pset;};
+    SimulationBox(ParticleSet* pset) : _pset(pset){};
     virtual void putInBox(){};
     virtual PosType displacement(int i, int j){
     std::cerr << "SimulationBox::displacement being called" << std::endl;

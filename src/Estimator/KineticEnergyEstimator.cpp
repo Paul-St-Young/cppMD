@@ -3,7 +3,8 @@
 
 RealType KineticEnergyEstimator::scalarEvaluate(){
     RealType T=0.0;
-    //#pragma omp parallel for reduce(+:T)
+    
+    #pragma omp parallel for reduction(+:T)
     for (int i=0;i<_pset.n;i++){
         for (int coord=0;coord<_MD_DIM;coord++){
             T+=0.5 * _pset.ptcls[i]->m 

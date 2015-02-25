@@ -23,6 +23,8 @@ public:
     void readPositions (std::string filename);
     void readVelocities(std::string filename);
     void setMasses(RealType m){ for (int i=0;i<_n;i++) _ptls[i]->m=m; };
+    void initCubicPositions(RealType L);
+    void initVelocities(RealType T, RealType m);
 };
 
 #endif

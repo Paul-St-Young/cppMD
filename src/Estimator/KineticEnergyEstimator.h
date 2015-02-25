@@ -6,7 +6,7 @@
 class KineticEnergyEstimator : public Estimator{
 public:
     KineticEnergyEstimator(ParticleSet pset) : Estimator(pset) {}; 
-	virtual RealType scalarEvaluate();
+	RealType scalarEvaluate();
 };
 
 #endif

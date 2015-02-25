@@ -9,75 +9,83 @@
 #include "Updator/VelocityVerlet.h"
 #include "Estimator/KineticEnergyEstimator.h"
 #include "Estimator/PotentialEstimator.h"
+#include "Estimator/MomentumEstimator.h"
+#include "Estimator/PairCorrelationEstimator.h"
 
 using namespace std;
 
 int main(int argc, char* argv[]){
 
     int n=64; // simulating 64 particles
+    RealType T=0.728; // temperature
     RealType L=4.2323167; // size of simulation box
     RealType m=48.0; // mass of the particles
     int nsteps=1000; // simulation steps
     RealType h=0.01; // simulation step size
     RealType sigma=1.0, epsilon=1.0; // Lennard-Jones parameters
-
+    
+    RealType rmax=4.0;
+    RealType dr=0.1;
+    
     // generate particles
-    ParticlePool globalPool(n);
-    globalPool.readPositions ("../R.txt");
-    globalPool.readVelocities("../V.txt");
+    ParticlePool globalPool(n); // memory allocated here
     globalPool.setMasses(m);
-	
+    globalPool.initCubicPositions(L);
+    globalPool.initVelocities(T,m);
+    
     // put in global particle set
     ParticleSet gPset(globalPool.myParticles());
-	
+
     // tell box to manage pset
     SimulationBox* box;
     box=new PeriodicBox(&gPset,L);
     box->putInBox();
-    
+
     // build a force field with a pair potential and a thermostat (later)
-	PairPotential* pp;
-	pp = new LennardJones(sigma,epsilon);
+    PairPotential* pp;
+    pp = new LennardJones(sigma,epsilon);
     ForceField* ff;
-	ff = new ForceField(&gPset,pp,box);
-	
-	// tell the updator to update particle set with the force field inside the box
+    ff = new ForceField(&gPset,pp,box);
+
+    // tell the updator to update particle set with the force field inside the box
     Updator* updator;
     updator = new VelocityVerlet(&gPset,ff,box); 
-	updator->h=h;
-	
-	// throw in some estimators
-    Estimator *kinetic, *potential;
-    kinetic = new KineticEnergyEstimator(gPset);
-    potential = new PotentialEstimator(gPset,pp,box);
-	
-	/* report generation
-	ff->apply();
-	cout << "Initalized:" << endl;
-	for (int i=0;i<gPset.n;i++){
-		cout << "  Particle " << i << " position" << gPset.ptcls[i]->str() << endl;
-		cout << "             " << " velocity " << str( gPset.ptcls[i]->v ) << endl;
-	    for (int coord=0;coord<_MD_DIM;coord++) gPset.ptcls[i]->a[coord]*=m;
-		cout << "             " << " force " << str(gPset.ptcls[i]->a) << endl;
-	}*/
-	
-	// clear trajectory file
-	ofstream fs;
-	fs.open("myTrajectory.xyz",ios::out);
-	fs.close();
-	
-	RealType T,U;
+    updator->h=h;
+
+    // throw in some estimators
+    Estimator *kinetic, *potential, *momentum, *pairCorr;
+    kinetic     = new KineticEnergyEstimator(gPset);
+    potential   = new PotentialEstimator(gPset,pp,box);
+    momentum    = new MomentumEstimator(gPset);
+    pairCorr    = new PairCorrelationEstimator(gPset,box,rmax,dr,L);
+    
+    // clear trajectory file
+    ofstream fs;
+    fs.open("myTrajectory.xyz",ios::out);
+    fs.close();
+
+    RealType K,U,Ti; // Kinetic, Potential, Temperature (instantaneous)
+    PosType  P(_MD_DIM,0.0), Gr((int)rmax/dr,0.0); // Momentum, Pair Correlation
     // perform MD simulation
     for (int step=0; step < nsteps; step++){
+        // Estimators
         U=potential->scalarEvaluate();
-        T=kinetic->scalarEvaluate();
-        cout << step << " ("<< U << " " << T << " " << T+U << ")" << endl;
+        K=kinetic->scalarEvaluate();
+        P=momentum->vectorEvaluate();
+        Gr=pairCorr->vectorEvaluate();
+        
+        Ti=2*K/3/n;
+        cout << step << " ("<< U << " " << K << " " << Ti << " " << K+U << ")" << endl;
+        
         updator->update();
+        
         gPset.appendFile("myTrajectory.xyz");
     }
 	
 	delete kinetic;
 	delete potential;
+	delete momentum;
+	delete pairCorr;
 	delete box;
 	delete pp;
 	delete ff;

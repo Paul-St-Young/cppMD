@@ -10,6 +10,7 @@ protected:
 public:
     Estimator(ParticleSet pset) : _pset(pset) {};
 	virtual RealType scalarEvaluate(){};
+	virtual PosType  vectorEvaluate(){};
 };
 
 #endif

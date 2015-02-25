@@ -11,7 +11,7 @@ SimulationBox* _box;
 public:
     PotentialEstimator(ParticleSet pset, PairPotential* pp, SimulationBox* box) 
         : Estimator(pset), _pp(pp), _box(box) {}; 
-	virtual RealType scalarEvaluate();
+	RealType scalarEvaluate();
 };
 
 #endif
