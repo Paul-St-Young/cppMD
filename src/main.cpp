@@ -5,12 +5,15 @@
 #include "Particle/ParticlePool.h"
 #include "Simulation/PeriodicBox.h"
 #include "ForceField/Lennard-Jones.h"
+#include "ForceField/AndersonThermostat.h"
+#include "ForceField/Nose-Hoover.h"
 #include "ForceField/ForceField.h"
 #include "Updator/VelocityVerlet.h"
 #include "Estimator/KineticEnergyEstimator.h"
 #include "Estimator/PotentialEstimator.h"
 #include "Estimator/MomentumEstimator.h"
 #include "Estimator/PairCorrelationEstimator.h"
+#include "Estimator/StructureFactorEstimator.h"
 
 using namespace std;
 
@@ -24,8 +27,10 @@ int main(int argc, char* argv[]){
     RealType h=0.01; // simulation step size
     RealType sigma=1.0, epsilon=1.0; // Lennard-Jones parameters
     
+    RealType eta=3.0; // collision coupling strength eta*h shoud be around 0.01 (1%)
     RealType rmax=4.0;
     RealType dr=0.1;
+    int maxK=3;
     
     // generate particles
     ParticlePool globalPool(n); // memory allocated here
@@ -44,8 +49,12 @@ int main(int argc, char* argv[]){
     // build a force field with a pair potential and a thermostat (later)
     PairPotential* pp;
     pp = new LennardJones(sigma,epsilon);
+    Thermostat* therm;
+    //therm = new AndersonThermostat(gPset,T,m,eta,h);
+    therm = new NoseHooverThermostat(gPset,T,m,1.0);
     ForceField* ff;
-    ff = new ForceField(&gPset,pp,box);
+    ff = new ForceField(&gPset,pp,box,therm);
+    
 
     // tell the updator to update particle set with the force field inside the box
     Updator* updator;
@@ -53,11 +62,12 @@ int main(int argc, char* argv[]){
     updator->h=h;
 
     // throw in some estimators
-    Estimator *kinetic, *potential, *momentum, *pairCorr;
+    Estimator *kinetic, *potential, *momentum, *pairCorr, *sk;
     kinetic     = new KineticEnergyEstimator(gPset);
     potential   = new PotentialEstimator(gPset,pp,box);
     momentum    = new MomentumEstimator(gPset);
     pairCorr    = new PairCorrelationEstimator(gPset,box,rmax,dr,L);
+    sk          = new StructureFactorEstimator(gPset,L,maxK);
     
     // clear trajectory file
     ofstream fs;
@@ -74,9 +84,8 @@ int main(int argc, char* argv[]){
         P=momentum->vectorEvaluate();
         Gr=pairCorr->vectorEvaluate();
         
-        Ti=2*K/3/n;
+        Ti=2.*K/3./n; // Temperature
         cout << step << " ("<< U << " " << K << " " << Ti << " " << K+U << ")" << endl;
-        
         updator->update();
         
         gPset.appendFile("myTrajectory.xyz");

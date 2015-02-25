@@ -24,12 +24,3 @@ void VelocityVerlet::update(){
 	}
 	
 }
-
-/*VelocityVerlet::~VelocityVerlet(){
-    for (int i=0;i<_pset->n;i++){
-        _oldA[i].clear();
-        _oldA[i].resize(0);
-    }
-    _oldA.clear();
-    _oldA.resize(0);
-}*/

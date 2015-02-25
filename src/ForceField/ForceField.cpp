@@ -9,10 +9,9 @@ void ForceField::apply(){
 		}
 	}
 	
-	PosType grad(_MD_DIM,0.0); // temporary variable for potential gradient
 	// calculate new acceleration
-	PosType  dR(_MD_DIM,0.0);
-	
+	PosType grad(_MD_DIM,0.0); // temporary variable for potential gradient
+	PosType dR(_MD_DIM,0.0);   // temporary variable for displacement vector
 	#pragma omp parallel for private(dR) private(grad) schedule(static,1)
 	for (int i=0;i<_pset->n;i++){
 	    for (int j=0;j<_pset->n;j++){
@@ -26,5 +25,6 @@ void ForceField::apply(){
 	    }
 	}
 	
+	// apply thermostat
+	_therm->apply();
 }
-

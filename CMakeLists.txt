@@ -19,6 +19,8 @@ add_library(pset #OBJECT
 add_library(updator #$<TARGET_OBJECTS:pset>
 	${SRC_DIR}/Simulation/PeriodicBox.cpp
 	${SRC_DIR}/ForceField/Lennard-Jones.cpp
+	${SRC_DIR}/ForceField/AndersonThermostat.cpp
+	${SRC_DIR}/ForceField/Nose-Hoover.cpp
 	${SRC_DIR}/ForceField/ForceField.cpp
 	${SRC_DIR}/Updator/VelocityVerlet.cpp
 )
@@ -28,6 +30,7 @@ add_library(estimator #$<TARGET_OBJECTS:pset>
 	${SRC_DIR}/Estimator/PotentialEstimator.cpp
 	${SRC_DIR}/Estimator/MomentumEstimator.cpp
 	${SRC_DIR}/Estimator/PairCorrelationEstimator.cpp
+	${SRC_DIR}/Estimator/StructureFactorEstimator.cpp
 )
 
 add_executable(cppMD

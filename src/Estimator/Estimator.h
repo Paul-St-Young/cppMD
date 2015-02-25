@@ -4,6 +4,8 @@
 #include "../Interface/TypeFactory.h"
 #include "../Particle/ParticleSet.h"
 
+#include <complex>
+
 class Estimator{
 protected:
     ParticleSet _pset;

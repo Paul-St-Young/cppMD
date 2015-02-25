@@ -1,5 +1,6 @@
-#include <cmath>
 #include "PairCorrelationEstimator.h"
+
+#include <cmath>
 
 PosType PairCorrelationEstimator::vectorEvaluate(){
     int n=(int)(_rmax-_rmin)/_dr; // number of grid points for histogram
@@ -17,7 +18,7 @@ PosType PairCorrelationEstimator::vectorEvaluate(){
     }
     
     for (int i=1;i<gr.size();i++){
-        gr[i]/=4*3.1415926535897*std::pow(i*_dr,2)*_dr*((float)_pset.n/std::pow(_L,3));
+        gr[i]/=4*M_PI*std::pow(i*_dr,2)*_dr*((float)_pset.n/std::pow(_L,3));
     }
     
     return gr;
