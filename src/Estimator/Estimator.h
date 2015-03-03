@@ -13,7 +13,8 @@ public:
     Estimator(ParticleSet pset) : _pset(pset) {};
 	virtual RealType scalarEvaluate(){};
 	virtual PosType  vectorEvaluate(){};
-	virtual ComplexType complexEvaluate(){};
+	virtual void complexVectorAccumulate(){};
+	virtual void writeFile(std::string filename){};
 };
 
 #endif

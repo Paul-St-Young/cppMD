@@ -9,13 +9,17 @@
 #include <cmath>
 
 class StructureFactorEstimator : public Estimator{
-std::complex<RealType> _rhoK(PosType k);
-std::vector<PosType> _leagalKVects(int maxK);
+ComplexType _rhoK(PosType k);
+std::vector<PosType> _leagalKVecs(int maxK);
 RealType _L;
 int _maxK;
 public:
-    StructureFactorEstimator(ParticleSet pset, RealType L, int maxK) : Estimator(pset), _L(L), _maxK(maxK) {}; 
-	RealType scalarEvaluate();
+    std::vector<PosType> kVecs;
+    std::vector<ComplexType> SK;
+    
+    StructureFactorEstimator(ParticleSet pset, RealType L, int maxK); 
+	void complexVectorAccumulate();
+	void writeFile(std::string filename);
 };
 
 #endif

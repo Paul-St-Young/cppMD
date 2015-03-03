@@ -86,6 +86,8 @@ int main(int argc, char* argv[]){
 
     RealType K,U,Ti; // Kinetic, Potential, Temperature (instantaneous)
     PosType  P(_MD_DIM,0.0), Gr((int)rmax/dr,0.0); // Momentum, Pair Correlation
+    
+    
     // perform MD simulation
     for (int step=0; step < nsteps; step++){
         // Estimators
@@ -93,6 +95,7 @@ int main(int argc, char* argv[]){
         K=kinetic->scalarEvaluate();
         P=momentum->vectorEvaluate();
         Gr=pairCorr->vectorEvaluate();
+        sk->complexVectorAccumulate();
         
         Ti=2.*K/3./n; // Temperature
         cout << step << " ("<< U << " " << K << " " << Ti << " " << K+U << ")" << endl;
@@ -100,6 +103,8 @@ int main(int argc, char* argv[]){
         
         //gPset.appendFile("myTrajectory.xyz");
     }
+    sk->writeFile("sk.dat");
+    
 	
 	delete kinetic;
 	delete potential;
