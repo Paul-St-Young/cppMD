@@ -1,2 +1,0 @@
-/home/yyang173/Desktop/atomic-projects/HW2/cppMD/test/build/CMakeFiles/boxTest.dir
-/home/yyang173/Desktop/atomic-projects/HW2/cppMD/test/build/CMakeFiles/particleTest.dir

@@ -1,1 +1,0 @@
-/usr/bin/c++       CMakeFiles/runTests.dir/testParticleSet.cpp.o CMakeFiles/runTests.dir/home/yyang173/Desktop/atomic-projects/HW2/cppMD/src/Particle/Particle.cpp.o CMakeFiles/runTests.dir/home/yyang173/Desktop/atomic-projects/HW2/cppMD/src/Particle/ParticleSet.cpp.o  -o runTests -rdynamic -Wl,-Bstatic -lgtest -Wl,-Bdynamic -lpthread 
