@@ -6,7 +6,7 @@
 class VelocityVerlet: public Updator {
 std::vector<PosType> _oldA; // need to store old acceleration
 public:
-	VelocityVerlet(ParticleSet* pset, ForceField* ff,SimulationBox* box):Updator(pset,ff,box){
+	VelocityVerlet(ParticleSet* pset, ForceField* ff,SimulationBox* box,Thermostat* therm):Updator(pset,ff,box,therm){
 		// !!!! There's a memory leak here ? !!!!
 		for (int i=0;i<_pset->n;i++){
 			PosType a(_MD_DIM,0.0);

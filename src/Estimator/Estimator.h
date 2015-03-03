@@ -13,6 +13,7 @@ public:
     Estimator(ParticleSet pset) : _pset(pset) {};
 	virtual RealType scalarEvaluate(){};
 	virtual PosType  vectorEvaluate(){};
+	virtual ComplexType complexEvaluate(){};
 };
 
 #endif

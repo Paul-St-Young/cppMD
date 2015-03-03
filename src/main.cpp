@@ -5,8 +5,8 @@
 #include "Particle/ParticlePool.h"
 #include "Simulation/PeriodicBox.h"
 #include "ForceField/Lennard-Jones.h"
-#include "ForceField/AndersonThermostat.h"
-#include "ForceField/Nose-Hoover.h"
+#include "Updator/AndersonThermostat.h"
+#include "Updator/Nose-Hoover.h"
 #include "ForceField/ForceField.h"
 #include "Updator/VelocityVerlet.h"
 #include "Estimator/KineticEnergyEstimator.h"
@@ -23,13 +23,22 @@ int main(int argc, char* argv[]){
     RealType T=0.728; // temperature
     RealType L=4.2323167; // size of simulation box
     RealType m=48.0; // mass of the particles
-    int nsteps=1000; // simulation steps
+    int nsteps=100; // simulation steps
     RealType h=0.01; // simulation step size
     RealType sigma=1.0, epsilon=1.0; // Lennard-Jones parameters
     
+    // AndersonThermostat
     RealType eta=3.0; // collision coupling strength eta*h shoud be around 0.01 (1%)
+    
+    // NoseHooverThermostat
+    RealType b=10.0; // drag coefficient
+    RealType Q=1.0; // coupling strength
+    
+    //PairCorrelationEstimator
     RealType rmax=4.0;
     RealType dr=0.1;
+    
+    // StructureFactorEstimator
     int maxK=3;
     
     // generate particles
@@ -46,19 +55,20 @@ int main(int argc, char* argv[]){
     box=new PeriodicBox(&gPset,L);
     box->putInBox();
 
-    // build a force field with a pair potential and a thermostat (later)
+    // build a force field with a pair potential
     PairPotential* pp;
     pp = new LennardJones(sigma,epsilon);
+    ForceField* ff;
+    ff = new ForceField(&gPset,pp,box);
+
+    // tell the updator to update particle set with the force field inside the box 
+      //  and give it a thermostat to control temperature
     Thermostat* therm;
     //therm = new AndersonThermostat(gPset,T,m,eta,h);
-    therm = new NoseHooverThermostat(gPset,T,m,1.0);
-    ForceField* ff;
-    ff = new ForceField(&gPset,pp,box,therm);
+    therm = new NoseHooverThermostat(gPset,T,m,Q,b);
     
-
-    // tell the updator to update particle set with the force field inside the box
     Updator* updator;
-    updator = new VelocityVerlet(&gPset,ff,box); 
+    updator = new VelocityVerlet(&gPset,ff,box,therm); 
     updator->h=h;
 
     // throw in some estimators
@@ -88,7 +98,7 @@ int main(int argc, char* argv[]){
         cout << step << " ("<< U << " " << K << " " << Ti << " " << K+U << ")" << endl;
         updator->update();
         
-        gPset.appendFile("myTrajectory.xyz");
+        //gPset.appendFile("myTrajectory.xyz");
     }
 	
 	delete kinetic;

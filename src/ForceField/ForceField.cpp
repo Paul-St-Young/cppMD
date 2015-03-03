@@ -24,7 +24,5 @@ void ForceField::apply(){
 	        }
 	    }
 	}
-	
-	// apply thermostat
-	_therm->apply();
+
 }

@@ -10,22 +10,22 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-add_library(pset #OBJECT
+add_library(pset 
 	${SRC_DIR}/Particle/Particle.cpp
 	${SRC_DIR}/Particle/ParticlePool.cpp
 	${SRC_DIR}/Particle/ParticleSet.cpp
 )
 
-add_library(updator #$<TARGET_OBJECTS:pset>
+add_library(updator 
 	${SRC_DIR}/Simulation/PeriodicBox.cpp
 	${SRC_DIR}/ForceField/Lennard-Jones.cpp
-	${SRC_DIR}/ForceField/AndersonThermostat.cpp
-	${SRC_DIR}/ForceField/Nose-Hoover.cpp
 	${SRC_DIR}/ForceField/ForceField.cpp
+	${SRC_DIR}/Updator/AndersonThermostat.cpp
+	${SRC_DIR}/Updator/Nose-Hoover.cpp
 	${SRC_DIR}/Updator/VelocityVerlet.cpp
 )
 
-add_library(estimator #$<TARGET_OBJECTS:pset>
+add_library(estimator
 	${SRC_DIR}/Estimator/KineticEnergyEstimator.cpp
 	${SRC_DIR}/Estimator/PotentialEstimator.cpp
 	${SRC_DIR}/Estimator/MomentumEstimator.cpp
