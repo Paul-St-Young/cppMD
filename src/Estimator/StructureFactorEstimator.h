@@ -18,8 +18,8 @@ public:
     std::vector<ComplexType> SK;
     
     StructureFactorEstimator(ParticleSet pset, RealType L, int maxK); 
-	void complexVectorAccumulate();
-	void writeFile(std::string filename);
+	void accumulate(int t);
+	void finalize(std::string filename);
 };
 
 #endif

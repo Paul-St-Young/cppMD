@@ -40,13 +40,13 @@ std::vector<PosType> StructureFactorEstimator::_leagalKVecs(int maxK){
 }
 
 
-void StructureFactorEstimator::complexVectorAccumulate(){  
+void StructureFactorEstimator::accumulate(int t){  
     for (int i=0;i<kVecs.size();i++){
         SK[i]+=_rhoK(kVecs[i]);
     }
 }
 
-void StructureFactorEstimator::writeFile(std::string filename){
+void StructureFactorEstimator::finalize(std::string filename){
     std::ofstream skFile;
     skFile.open(filename.c_str(),std::ios::out);
     for (int i=0;i<kVecs.size();i++){

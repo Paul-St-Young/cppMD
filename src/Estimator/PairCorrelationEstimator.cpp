@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-PosType PairCorrelationEstimator::vectorEvaluate(){
+void PairCorrelationEstimator::appendFile(std::string filename,int t){
     int n=(int)(_rmax-_rmin)/_dr; // number of grid points for histogram
     
     PosType gr(n,0.0);
@@ -21,5 +21,8 @@ PosType PairCorrelationEstimator::vectorEvaluate(){
         gr[i]/=4*M_PI*std::pow(i*_dr,2)*_dr*((float)_pset.n/std::pow(_L,3));
     }
     
-    return gr;
+    std::ofstream fs;
+    fs.open(filename.c_str(),std::ios::app);
+    fs << t << " " << str(gr) << std::endl;
+    fs.close();
 }

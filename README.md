@@ -1,17 +1,39 @@
 Getting Started
-====
-To build
-----
-  mkdir build
-  cd build
-  cmake ..
-  make
-To run
-----
-  ./cppMD
+---------------
+
+### To build
+    mkdir build
+    cd build
+    cmake ..
+    make
+
+### to run
+    ./cppDFT 
+
+### requirement
+1. cmake 2.8.8 or above
+2. c++11 compatible compiler
 
 Class Structure
-====
+---------------
+
+### Particle Management
+* Particle
+* ParticlePool
+* ParticleSet
+
+A particle is basically a collection of attributes such as posiotion, velocity, acceleration, mass and charge. A ParticlePool contains physical particles and is responsible for their memory allocation, deallocation and initialization. A ParticleSet maintains a list of pointers to the particles of interest.
+  
+  The idea is to have a "heavy" object ParticlePool that manages memory allocation and then have mutiple "light" objects ParticleSet to manipulate the data. A typical starting point is
+  
+    ParticlePool pPool(8); 
+    pPool.initCubicPositions(1.0);
+    ParticleSet gPset(pPool.myParticles());
+  
+  which:
+  1. initialize 3 particles at the origin
+  2. call an initialization method to redistribute the particles - most simulations don't allow two particles at the same position
+  3. allow a particle set to control some particles in the pool (partial pool control is not yet implemented, so all particle sets are global particle sets at the moment)
 
 Main
 ====
@@ -23,45 +45,28 @@ Main
 5. An Updator is created to tie together [ParticleSet,ForceField,SimulationBox]
 6. Perform MD simulation and report statistics
 
-Particle
-====
-The most basic objects to be manipulated
-
-ClassicalParticles
-----
-
-QuantumParticles
-----
-
-ParticleSet
-====
-
-Box
-====
+### Box
 A container for particle sets, used to impose boundary conditions. The box is also responsible for maintaining a distance tables for the global particle set
 
-PeriodicBox
-----
+#### PeriodicBox
 Knows where to put particles when they go out of bounds, knows the shortest distances between particles.
 
-Updator
-====
-The most complicated class in this program, used to drive the particles around. An updator should always have a pair potential generator, a thermostat and an update method to manimulate a particle set.
+### Updator
+An updator should have a pair potential generator, a thermostat and an update method to manimulate a particle set.
 
-Velocity Verlet
-----
+#### Velocity Verlet
 
+#### Thermostat
 
-PairPotential
-====
+##### AndersonThermostat
+
+##### Nose-Hoover
+
+### ForceField
+#### PairPotential
 Given a particle and a particle set, the pair potential object should be able to determine the force on the given particle
 
-LJ
-----
+##### LJ
 Lennard-Jones pair potential
 	
-Thermostat
-====
 
-AndersonThermostat
-----

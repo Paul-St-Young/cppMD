@@ -11,7 +11,7 @@ RealType _L;
 public:
     PairCorrelationEstimator(ParticleSet pset, SimulationBox* box, RealType rmax, RealType dr, RealType L, RealType rmin=0.0) : Estimator(pset), _box(box), _rmin(rmin), _rmax(rmax), _L(L), _dr(dr){};
     
-    PosType vectorEvaluate();
+    void appendFile(std::string filename,int t);
 };
     
 #endif

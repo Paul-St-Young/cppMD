@@ -31,6 +31,7 @@ add_library(estimator
 	${SRC_DIR}/Estimator/MomentumEstimator.cpp
 	${SRC_DIR}/Estimator/PairCorrelationEstimator.cpp
 	${SRC_DIR}/Estimator/StructureFactorEstimator.cpp
+	${SRC_DIR}/Estimator/VelocityCorrelation.cpp
 )
 
 add_executable(cppMD
