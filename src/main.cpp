@@ -20,16 +20,19 @@ using namespace std;
 
 int main(int argc, char* argv[]){
 
-    int n=64; // simulating 64 particles
     RealType T=0.728; // temperature
+    T=atof(argv[1]);
+
+    int n=64; // simulating 64 particles
+    
     RealType L=4.2323167; // size of simulation box
     RealType m=48.0; // mass of the particles
     int nsteps=1000; // simulation steps
-    RealType h=0.01; // simulation step size
+    RealType h=0.032; // simulation step size
     RealType sigma=1.0, epsilon=1.0; // Lennard-Jones parameters
     
     // AndersonThermostat
-    RealType eta=0.01; // collision coupling strength eta*h shoud be around 0.01 (1%)
+    RealType eta=1.0; // collision coupling strength eta*h shoud be around 0.01 (1%)
     
     // NoseHooverThermostat
     RealType b=0.0; // drag coefficient
@@ -40,10 +43,10 @@ int main(int argc, char* argv[]){
     RealType dr=0.1;
     
     // StructureFactorEstimator
-    int maxK=3;
+    int maxK=5;
     
     // VelocityCorrelation
-    int tmax=10;
+    int tmax=100;
     
     // generate particles
     ParticlePool globalPool(n); // memory allocated here

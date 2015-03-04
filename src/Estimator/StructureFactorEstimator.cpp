@@ -21,7 +21,7 @@ ComplexType StructureFactorEstimator::_rhoK(PosType k){
         for (int coord=0;coord<_MD_DIM;coord++){
             dot+=_pset.ptcls[i]->r[coord]*k[coord];
         }
-        rho+=std::exp(I*dot);
+        rho+=std::exp(I*dot)/(RealType)_pset.n;
     }
     return rho;
 }
@@ -41,6 +41,7 @@ std::vector<PosType> StructureFactorEstimator::_leagalKVecs(int maxK){
 
 
 void StructureFactorEstimator::accumulate(int t){  
+    //#pragma omp parallel for schedule(static,1)
     for (int i=0;i<kVecs.size();i++){
         SK[i]+=_rhoK(kVecs[i]);
     }
