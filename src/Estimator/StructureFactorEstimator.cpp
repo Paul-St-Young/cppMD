@@ -40,10 +40,14 @@ std::vector<PosType> StructureFactorEstimator::_leagalKVecs(int maxK){
 }
 
 
-void StructureFactorEstimator::accumulate(int t){  
-    //#pragma omp parallel for schedule(static,1)
+void StructureFactorEstimator::accumulate(int t){
+    #pragma omp parallel for schedule(static,1)
     for (int i=0;i<kVecs.size();i++){
-        SK[i]+=_rhoK(kVecs[i]);
+        PosType nkVec(kVecs[i]);
+        for (int coord=0;coord<_MD_DIM;coord++){
+            nkVec[coord]*=-1;
+        }
+        SK[i]+=_rhoK(kVecs[i])*_rhoK(nkVec);
     }
 }
 

@@ -19,9 +19,10 @@ for line in f:
     else:
       kMagList[kMag].append(sk)
     
+
 skList=[]
-for l in kMagList.keys():
-  skList.append(sum(kMagList[l])/len(kMagList[l]).real)
-plt.plot(kList,skList,'-o')
+for l in sorted( kMagList.keys() ):
+  skList.append(sum(kMagList[l]).real/len(kMagList[l]))
+plt.plot(kList[2:],skList[2:],'-o')
 plt.show()
 

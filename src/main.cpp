@@ -43,7 +43,7 @@ int main(int argc, char* argv[]){
     RealType dr=0.1;
     
     // StructureFactorEstimator
-    int maxK=5;
+    int maxK=10;
     
     // VelocityCorrelation
     int tmax=100;
