@@ -26,7 +26,7 @@ for line in f:
     cols[1] = cols[1].replace("(","")
     cols[-1] = cols[-1].replace(")","")
     x.append( int(cols[0]) )
-    E.append( float(cols[ column_map[args.column] ][:-1] ) )
+    E.append( float(cols[ column_map[args.column] ]) )
 # end for line
 
 npx=array(x)
@@ -34,7 +34,9 @@ npE=array(E)
 
 # --------- Plot trace ---------
 line1 = plt.plot(x,E,"r--", label="total energy", linestyle='-', color="black")
-plt.title(args.column)
+plt.title(column_name[args.column])
+plt.ylabel(args.column)
+plt.xlabel("t")
 plt.axhline(npE.mean(), linestyle='dashed')
 
 #plt.text(200, npE.mean()+3*npE.std(), r"$\mu="+str(npE.mean())[:8]+",\ \sigma="+str(npE.std())[:5]+"$")

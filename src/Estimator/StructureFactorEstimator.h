@@ -13,6 +13,7 @@ ComplexType _rhoK(PosType k);
 std::vector<PosType> _leagalKVecs(int maxK);
 RealType _L;
 int _maxK;
+int _mystep;
 public:
     std::vector<PosType> kVecs;
     std::vector<ComplexType> SK;

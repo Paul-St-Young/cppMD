@@ -1,0 +1,32 @@
+simulation:
+    steps       100
+    stepsize    0.01
+    
+particles:
+    n           64      # number of particles
+    mass        48.0
+    
+box:
+    type    periodic
+    size    4.2323167
+    
+forcefield:
+    pairpotential   Lennard-Jones
+    sigma           1.0
+    epsilon         1.0
+    
+thermostat:
+    type    Anderson
+    eta     1.0
+    
+estimators:
+    # for pair correlation estimator
+    rmax    4.0
+    dr      0.01
+    # for structure factor estimator
+    maxK    5
+    # for velocity correlation estimator
+    tmax    100 # window size measured in number of steps
+    
+    
+    

@@ -1,6 +1,7 @@
 #include <fstream>
 
 #include "Interface/TypeFactory.h"
+#include "Interface/InputManager.h"
 #include "Particle/ParticleSet.h"
 #include "Particle/ParticlePool.h"
 #include "Simulation/PeriodicBox.h"
@@ -20,7 +21,10 @@ using namespace std;
 
 int main(int argc, char* argv[]){
 
-    RealType T=0.728; // temperature
+    InputManager manager("../MD.inp");
+    cout << manager["simulation"].inps["steps"] << endl;
+/*
+    RealType T; // temperature
     T=atof(argv[1]);
 
     int n=64; // simulating 64 particles
@@ -32,7 +36,7 @@ int main(int argc, char* argv[]){
     RealType sigma=1.0, epsilon=1.0; // Lennard-Jones parameters
     
     // AndersonThermostat
-    RealType eta=1.0; // collision coupling strength eta*h shoud be around 0.01 (1%)
+    RealType eta=0.0; // collision coupling strength eta*h shoud be around 0.01 (1%)
     
     // NoseHooverThermostat
     RealType b=0.0; // drag coefficient
@@ -40,10 +44,10 @@ int main(int argc, char* argv[]){
     
     //PairCorrelationEstimator
     RealType rmax=4.0;
-    RealType dr=0.1;
+    RealType dr=0.01;
     
     // StructureFactorEstimator
-    int maxK=10;
+    int maxK=5;
     
     // VelocityCorrelation
     int tmax=100;
@@ -71,8 +75,8 @@ int main(int argc, char* argv[]){
     // tell the updator to update particle set with the force field inside the box 
       //  and give it a thermostat to control temperature
     Thermostat* therm;
-    therm = new Thermostat(gPset);
-    //therm = new AndersonThermostat(gPset,T,m,eta,h);
+    //therm = new Thermostat(gPset);
+    therm = new AndersonThermostat(gPset,T,m,eta,h);
     //therm = new NoseHooverThermostat(gPset,T,m,Q,b);
     
     Updator* updator;
@@ -128,6 +132,7 @@ int main(int argc, char* argv[]){
 	delete ff;
 	delete therm;
 	delete updator;
+	*/
 
 return 0;
 }

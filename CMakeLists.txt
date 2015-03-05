@@ -35,6 +35,7 @@ add_library(estimator
 )
 
 add_executable(cppMD
+    ${SRC_DIR}/Interface/InputManager.cpp
 	${SRC_DIR}/main.cpp
 )
 

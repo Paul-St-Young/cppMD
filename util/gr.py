@@ -25,7 +25,7 @@ for i in range(len(GR)):
     for j in range(len(gr)):
         avg[j] += GR[i][j]/len(GR)
         
-r = numpy.arange(0,4.0,0.1)
+r = numpy.arange(0,4.0,0.01)
 plt.figure()
 plt.plot(r,avg,'bx-')
 plt.title("g(r) for an LJ fluid")
