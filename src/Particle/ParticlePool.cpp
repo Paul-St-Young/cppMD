@@ -49,6 +49,7 @@ void ParticlePool::initVelocities(RealType T, RealType m){
     PosType  netP(_MD_DIM,0.0);
     RealType netE=0.0;
     
+    /*
     for (int i=0;i<_n;i++){
         for (int coord=0;coord<_MD_DIM;coord++){
             _ptls[i]->v[coord]=rand(mt);
@@ -62,7 +63,29 @@ void ParticlePool::initVelocities(RealType T, RealType m){
         for (int coord=0;coord<_MD_DIM;coord++){
             _ptls[i]->v[coord]=(_ptls[i]->v[coord]-netP[coord])*vScale;
         }
+    }*/
+    
+    for (int i=0;i<_n;i++){
+        for (int coord=0;coord<_MD_DIM;coord++){
+            _ptls[i]->v[coord]=rand(mt);
+            netP[coord] += _ptls[i]->v[coord];
+        }
     }
+    for (int coord=0;coord<_MD_DIM;coord++) netP[coord]/=(RealType)_n;
+    for (int i=0;i<_n;i++){
+        for (int coord=0;coord<_MD_DIM;coord++){
+            _ptls[i]->v[coord]=(_ptls[i]->v[coord]-netP[coord]);
+            netE += pow(_ptls[i]->v[coord],2);
+        }
+    }
+    RealType vScale = sqrt(3*_n*T/(m*netE));
+    for (int i=0;i<_n;i++){
+        for (int coord=0;coord<_MD_DIM;coord++){
+            _ptls[i]->v[coord]=_ptls[i]->v[coord]*vScale;
+        }
+    }
+    
+    
 }
 
 void ParticlePool::readPositions(std::string filename){

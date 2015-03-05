@@ -20,7 +20,6 @@ VelocityCorrelation::VelocityCorrelation(ParticleSet pset, int tmax)
 
 void VelocityCorrelation::accumulate(int t){
     
-    
     if (!(t%_tmax)){ // start over every tmax steps
         // dump current plot and start a new one
         for (int i=0;i<_tmax;i++){

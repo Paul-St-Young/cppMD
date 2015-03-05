@@ -28,7 +28,7 @@ int main(int argc, char* argv[]){
     RealType L=4.2323167; // size of simulation box
     RealType m=48.0; // mass of the particles
     int nsteps=1000; // simulation steps
-    RealType h=0.032; // simulation step size
+    RealType h=0.01; // simulation step size
     RealType sigma=1.0, epsilon=1.0; // Lennard-Jones parameters
     
     // AndersonThermostat
@@ -71,7 +71,8 @@ int main(int argc, char* argv[]){
     // tell the updator to update particle set with the force field inside the box 
       //  and give it a thermostat to control temperature
     Thermostat* therm;
-    therm = new AndersonThermostat(gPset,T,m,eta,h);
+    therm = new Thermostat(gPset);
+    //therm = new AndersonThermostat(gPset,T,m,eta,h);
     //therm = new NoseHooverThermostat(gPset,T,m,Q,b);
     
     Updator* updator;
@@ -107,7 +108,6 @@ int main(int argc, char* argv[]){
         Ti=2.*K/3./n;
         
         cout << step << " ("<< U << " " << K << " " << Ti << " " << K+U << ")" << endl;
-        
         updator->update();
         
         gPset.appendFile("myTrajectory.xyz");
