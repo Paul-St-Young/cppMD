@@ -7,10 +7,10 @@ Getting Started
     cmake ..
     make
 
-### to run
-    ./cppDFT 
+### To run with default input
+    ./cppMD ../MD.inp
 
-### requirement
+### Requirements
 1. cmake 2.8.8 or above
 2. c++11 compatible compiler
 

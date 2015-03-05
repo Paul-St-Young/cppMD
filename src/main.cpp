@@ -21,36 +21,45 @@ using namespace std;
 
 int main(int argc, char* argv[]){
 
+    // initialize parameters
+    RealType sigma,epsilon,eta,b,Q;
     InputManager manager("../MD.inp");
-    cout << manager["simulation"].inps["steps"] << endl;
-/*
-    RealType T; // temperature
-    T=atof(argv[1]);
-
-    int n=64; // simulating 64 particles
     
-    RealType L=4.2323167; // size of simulation box
-    RealType m=48.0; // mass of the particles
-    int nsteps=1000; // simulation steps
-    RealType h=0.01; // simulation step size
-    RealType sigma=1.0, epsilon=1.0; // Lennard-Jones parameters
+    int nsteps=atoi(manager["simulation"]["nsteps"].c_str());
+    RealType h=atof(manager["simulation"]["stepsize"].c_str());
+    RealType T=atof(manager["simulation"]["temperature"].c_str());
     
-    // AndersonThermostat
-    RealType eta=0.0; // collision coupling strength eta*h shoud be around 0.01 (1%)
+    int n=atoi(manager["particles"]["n"].c_str());
+    RealType m=atoi(manager["particles"]["mass"].c_str());
     
-    // NoseHooverThermostat
-    RealType b=0.0; // drag coefficient
-    RealType Q=1.0; // coupling strength
+    string boxType=manager["box"]["type"];
+    RealType L=atof(manager["box"]["size"].c_str());
+    
+    string pairPotentialType=manager["forcefield"]["pairpotential"];
+    if (pairPotentialType=="Lennard-Jones"){
+        sigma=atof(manager["forcefield"]["sigma"].c_str());
+        epsilon=atof(manager["forcefield"]["epsilon"].c_str());
+    }
+    
+    string thermostatType=manager["thermostat"]["type"];
+    if (thermostatType=="Anderson"){
+        // collision coupling strength eta*h shoud be around 0.01 (1%)
+        eta=atof(manager["thermostat"]["eta"].c_str());
+    } else if (thermostatType=="Nose-Hoover") {
+        b=atof(manager["thermostat"]["b"].c_str());
+        Q=atof(manager["thermostat"]["Q"].c_str());
+    }
     
     //PairCorrelationEstimator
-    RealType rmax=4.0;
-    RealType dr=0.01;
+    RealType rmin=atof(manager["estimator"]["rmin"].c_str());
+    RealType rmax=atof(manager["estimator"]["rmax"].c_str());
+    RealType dr=atof(manager["estimator"]["dr"].c_str());
     
     // StructureFactorEstimator
-    int maxK=5;
+    int maxK=atoi(manager["estimator"]["maxK"].c_str());
     
     // VelocityCorrelation
-    int tmax=100;
+    int tmax=atof(manager["estimator"]["tmax"].c_str());
     
     // generate particles
     ParticlePool globalPool(n); // memory allocated here
@@ -75,9 +84,9 @@ int main(int argc, char* argv[]){
     // tell the updator to update particle set with the force field inside the box 
       //  and give it a thermostat to control temperature
     Thermostat* therm;
-    //therm = new Thermostat(gPset);
-    therm = new AndersonThermostat(gPset,T,m,eta,h);
-    //therm = new NoseHooverThermostat(gPset,T,m,Q,b);
+    if (thermostatType=="Anderson") therm = new AndersonThermostat(gPset,T,m,eta,h);
+    else if (thermostatType=="Nose-Hoover") therm = new NoseHooverThermostat(gPset,T,m,Q,b);
+    else therm = new Thermostat(gPset); // no thermostat
     
     Updator* updator;
     updator = new VelocityVerlet(&gPset,ff,box,therm); 
@@ -132,7 +141,6 @@ int main(int argc, char* argv[]){
 	delete ff;
 	delete therm;
 	delete updator;
-	*/
 
 return 0;
 }

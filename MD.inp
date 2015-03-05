@@ -1,25 +1,26 @@
 simulation:
-    steps       100
-    stepsize    0.01
+    nsteps      1000
+    stepsize    0.038
+    temperature 2.0
     
 particles:
     n           64      # number of particles
-    mass        48.0
+    mass        48.0    # mass of particles
     
 box:
     type    periodic
     size    4.2323167
     
 forcefield:
-    pairpotential   Lennard-Jones
+    pairpotential   Lennard-Jones # choices [ Lennard-Jones ]
     sigma           1.0
     epsilon         1.0
     
 thermostat:
-    type    Anderson
+    type    Anderson # choices [ Anderson,Nose-Hoover ]
     eta     1.0
     
-estimators:
+estimator:
     # for pair correlation estimator
     rmax    4.0
     dr      0.01
