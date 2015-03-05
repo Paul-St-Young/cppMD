@@ -21,10 +21,16 @@ using namespace std;
 
 int main(int argc, char* argv[]){
 
+    if (argc<2){
+        cout << "please specify input" << endl;
+        exit(0);
+    }
+
     // initialize parameters
     RealType sigma,epsilon,eta,b,Q;
-    InputManager manager("../MD.inp");
+    InputManager manager(argv[1]);
     
+    int nequil=atoi(manager["simulation"]["nequil"].c_str());
     int nsteps=atoi(manager["simulation"]["nsteps"].c_str());
     RealType h=atof(manager["simulation"]["stepsize"].c_str());
     RealType T=atof(manager["simulation"]["temperature"].c_str());
@@ -110,7 +116,10 @@ int main(int argc, char* argv[]){
     PosType  P(_MD_DIM,0.0), Gr((int)rmax/dr,0.0); // Momentum, Pair Correlation
     
     // perform MD simulation
-    for (int step=0; step < nsteps; step++){
+    for (int step=0; step < nequil; step++){ // equilibrate
+        updator->update(true);
+    }
+    for (int step=0; step < nsteps; step++){ // run
         // Estimators
         U=potential->scalarEvaluate();
         K=kinetic->scalarEvaluate();

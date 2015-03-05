@@ -1,23 +1,24 @@
 simulation:
+    nequil      200
     nsteps      1000
-    stepsize    0.038
-    temperature 2.0
+    stepsize    0.01
+    temperature 0.728
     
 particles:
     n           64      # number of particles
     mass        48.0    # mass of particles
     
-box:
+box: # choices [ periodic ]
     type    periodic
     size    4.2323167
     
-forcefield:
-    pairpotential   Lennard-Jones # choices [ Lennard-Jones ]
+forcefield: # choices [ Lennard-Jones ]
+    pairpotential   Lennard-Jones
     sigma           1.0
     epsilon         1.0
     
-thermostat:
-    type    Anderson # choices [ Anderson,Nose-Hoover ]
+thermostat: # choices [ Anderson,Nose-Hoover ]
+    type    Anderson 
     eta     1.0
     
 estimator:

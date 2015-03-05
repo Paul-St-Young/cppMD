@@ -11,6 +11,7 @@ StructureFactorEstimator::StructureFactorEstimator(ParticleSet pset, RealType L,
     std::vector<ComplexType> SK0(kVecs.size(),0.0);
     SK.swap(SK0);
     _mystep=0;
+    _mycumulation=0;
 }
 
 ComplexType StructureFactorEstimator::_rhoK(PosType k){
@@ -49,8 +50,8 @@ void StructureFactorEstimator::accumulate(int t){
             nkVec[coord]*=-1;
         }
         SK[i]+=_rhoK(kVecs[i])*_rhoK(nkVec)/(RealType)_pset.n;
-        _mystep++;
     }
+    _mycumulation++;
 }
 
 void StructureFactorEstimator::finalize(std::string filename){
@@ -61,7 +62,7 @@ void StructureFactorEstimator::finalize(std::string filename){
         for (int coord=0;coord<_MD_DIM;coord++){
             kMag += std::sqrt(kVecs[i][coord]*kVecs[i][coord]);
         }
-        skFile << kMag << " " << SK[i]/(RealType)_mystep << std::endl;
+        skFile << kMag << " " << SK[i]/(RealType)_mycumulation << std::endl;
     }
     skFile.close();
 };

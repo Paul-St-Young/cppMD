@@ -16,11 +16,13 @@ VelocityCorrelation::VelocityCorrelation(ParticleSet pset, int tmax)
     }
     
     _myt=0; // myt: 0->tmax
+    _myCumulation=0;
 }
 
 void VelocityCorrelation::accumulate(int t){
     
     if (!(t%_tmax)){ // start over every tmax steps
+        _myCumulation++;
         // dump current plot and start a new one
         for (int i=0;i<_tmax;i++){
             _cv[i] += _cvCur[i];
@@ -48,7 +50,7 @@ void VelocityCorrelation::finalize(std::string filename){
     std::ofstream f;
     f.open(filename.c_str(),std::ios::out);
     for (int i=0;i<_tmax;i++){
-        f << i << " " << _cv[i] << std::endl;
+        f << i << " " << _cv[i]/_myCumulation << std::endl;
     }
     f.close();
 }

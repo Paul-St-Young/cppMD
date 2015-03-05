@@ -4,7 +4,7 @@
 #include "Estimator.h"
 
 class VelocityCorrelation : public Estimator{
-int _tmax, _myt;
+int _tmax, _myt, _myCumulation;
 std::vector<RealType> _cv, _cvCur;
 std::vector<PosType> _refVel;
 public:

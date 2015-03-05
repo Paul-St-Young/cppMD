@@ -3,7 +3,7 @@
 from pandas import DataFrame, Series,date_range
 from numpy.random import randn
 import matplotlib.pyplot as plt
-import sys
+import argparse
 
 def get_sklist(filename):
     f=open(filename,'r')
@@ -27,30 +27,31 @@ def get_sklist(filename):
       skList.append(sum(kMagList[l]).real/len(kMagList[l]))
     return [kList,skList]
 # end def get_sklist
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Plot a list of structure factors')
+    parser.add_argument('-e','--equil',type=int,default=0,help="number of equilibration steps")
+    args = parser.parse_args()
+
+    #file_list = ["sk0.1.dat","sk0.5.dat","sk0.8.dat","sk1.0.dat"]
+    file_list = ["sk.dat"]
+
+    kList,skList = get_sklist(file_list[0])
     
-file_list = ["sk0.5.dat","sk1.0.dat","sk2.0.dat","sk3.0.dat"]
+    SKLIST=[]
+    for i in range(len(kList)):
+        SKLIST.append([])
+    #end for i
+    for fn in file_list:
+        kList,skList = get_sklist(fn)
+        for i in range(len(skList)):
+            SKLIST[i].append(skList[i])
+    # end for fn
 
-kList,skList = get_sklist(file_list[0])
-SKLIST=[]
-for i in range(len(kList)):
-    SKLIST.append([])
-#end for i
-for fn in file_list:
-    kList,skList = get_sklist(fn)
-    for i in range(len(skList)):
-        SKLIST[i].append(skList[i])
-# end for fn
+    df = DataFrame(SKLIST, index=kList, columns=file_list)
 
-df = DataFrame(SKLIST, index=kList, columns=file_list)
+    plt.figure()
+    df.plot()
+    plt.show()
 
-plt.figure()
-df.plot()
-plt.show()
-
-
-'''
-ts = Series(randn(1000), index=date_range('1/1/2000', periods=1000))
-df = DataFrame(randn(1000, 4), index=ts.index, columns=list('ABCD'))
-df = df.cumsum()
-plt.figure(); df.plot(); plt.legend(loc='best')
-'''
+# end __main__

@@ -5,4 +5,4 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make
 
-./cppMD 0.728
+./cppMD ../MD.inp
