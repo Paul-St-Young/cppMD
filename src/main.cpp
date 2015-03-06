@@ -89,7 +89,7 @@ int main(int argc, char* argv[]){
       //  and give it a thermostat to control temperature
     Thermostat* therm;
     if (thermostatType=="Anderson") therm = new AndersonThermostat(gPset,T,m,eta,h,nequil,keep);
-    else if (thermostatType=="Nose-Hoover") therm = new NoseHooverThermostat(gPset,T,m,Q,b,nequil,keep);
+    else if (thermostatType=="Nose-Hoover") therm = new NoseHooverThermostat(gPset,T,Q,b,h,nequil,keep);
     else therm = new Thermostat(gPset); // no thermostat
     
     Updator* updator;
@@ -130,18 +130,18 @@ int main(int argc, char* argv[]){
     cv->finalize("cv.dat");
     
 	
-	delete kinetic;
-	delete potential;
-	delete momentum;
-	delete pairCorr;
-	delete sk;
-	delete cv;
-	
-	delete box;
-	delete pp;
-	delete ff;
-	delete therm;
-	delete updator;
+    delete kinetic;
+    delete potential;
+    delete momentum;
+    delete pairCorr;
+    delete sk;
+    delete cv;
+
+    delete box;
+    delete pp;
+    delete ff;
+    delete therm;
+    delete updator;
 
 return 0;
 }

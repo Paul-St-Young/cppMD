@@ -4,10 +4,10 @@
 #include "Thermostat.h"
 
 class NoseHooverThermostat : public Thermostat{
-RealType _T,_m,_Q,_beta,_g;
-RealType _b;
+RealType _T,_Q,_beta,_b,_h;
+int _g;
 public:
-    NoseHooverThermostat(ParticleSet pset, RealType T, RealType m, RealType Q,RealType b, int nequil=0, bool keep=true);
+    NoseHooverThermostat(ParticleSet pset, RealType T, RealType Q,RealType b,RealType h, int nequil=0, bool keep=true);
     void apply();
 };
 

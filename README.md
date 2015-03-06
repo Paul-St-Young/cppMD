@@ -31,7 +31,7 @@ A particle is basically a collection of attributes such as posiotion, velocity, 
     ParticleSet gPset(pPool.myParticles());
   
   which:
-  1. initialize 3 particles at the origin
+  1. initialize 8 particles at the origin
   2. call an initialization method to redistribute the particles - most simulations don't allow two particles at the same position
   3. allow a particle set to control some particles in the pool (partial pool control is not yet implemented, so all particle sets are global particle sets at the moment)
 

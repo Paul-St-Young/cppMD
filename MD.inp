@@ -19,8 +19,8 @@ forcefield: # choices [ Lennard-Jones ]
     
 thermostat: # choices [ Anderson(eta),Nose-Hoover(b,Q),None ]
     type    Anderson 
-    eta     1.0
-    keep    no      # keep applying the thermostat even after equilibration
+    eta     3.0
+    keep    yes      # keep applying the thermostat even after equilibration
     
 estimator:
     # for pair correlation estimator
