@@ -11,7 +11,7 @@ Getting Started
     ./cppMD ../MD.inp
 
 ### Requirements
-1. cmake 2.8.8 or above
+1. cmake 2.8.6 or above
 2. c++11 compatible compiler
 
 Class Structure
@@ -37,19 +37,18 @@ A particle is basically a collection of attributes such as posiotion, velocity, 
 
 Main
 ====
-
-1. Generate a pool of particles (taking up significant physical memory)
-2. Create a light-weighed ParticleSet to partition the particles
-3. Create a SimulationBox to manipulate the partition
+1. Assign inputs
+2. Generate a pool of particles (taking up significant physical memory), then reate a light-weighed ParticleSet to partition the particles
+3. Create a SimulationBox to manipulate the partition (aka particle set)
 4. A ForceField is created with a PairPotential
-5. An Updator is created to tie together [ParticleSet,ForceField,SimulationBox]
-6. Perform MD simulation and report statistics
+5. An Updator is created to tie together [ParticleSet,ForceField,SimulationBox]. It is also given a Thermostat to control temerature
+6. Perform MD simulation and collect statistics
 
 ### Box
 A container for particle sets, used to impose boundary conditions. The box is also responsible for maintaining a distance tables for the global particle set
 
 #### PeriodicBox
-Knows where to put particles when they go out of bounds, knows the shortest distances between particles.
+Knows where to put particles when they go out of bounds, knows the shortest distances between particles according to minimum image convention.
 
 ### Updator
 An updator should have a pair potential generator, a thermostat and an update method to manimulate a particle set.

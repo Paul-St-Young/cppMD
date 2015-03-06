@@ -21,7 +21,7 @@ public:
 	//iterator end(){return ptcls.end();};
 	
 	void appendFile(std::string filename);
-	// void readPositions(std::string filename); // should be in particle pool
+	void clearFile (std::string filename);
 };
 
 #endif

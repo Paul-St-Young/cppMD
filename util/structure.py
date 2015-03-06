@@ -5,6 +5,14 @@ from numpy.random import randn
 import matplotlib.pyplot as plt
 import argparse
 
+temp_list = ['0.1','0.5','1.5','2.5','3.5']
+prefix='sk'
+sufix='.dat'
+file_list=[]
+for t in temp_list:
+    file_list.append(prefix+t+sufix)
+# end for t
+
 def get_sklist(filename):
     f=open(filename,'r')
     kMagList={}
@@ -25,16 +33,13 @@ def get_sklist(filename):
     skList=[]
     for l in sorted( kMagList.keys() ):
       skList.append(sum(kMagList[l]).real/len(kMagList[l]))
-    return [kList,skList]
+    return [kList[1:],skList[1:]]
 # end def get_sklist
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Plot a list of structure factors')
     parser.add_argument('-e','--equil',type=int,default=0,help="number of equilibration steps")
     args = parser.parse_args()
-
-    #file_list = ["sk0.1.dat","sk0.5.dat","sk0.8.dat","sk1.0.dat"]
-    file_list = ["sk.dat"]
 
     kList,skList = get_sklist(file_list[0])
     
@@ -47,11 +52,17 @@ if __name__ == '__main__':
         for i in range(len(skList)):
             SKLIST[i].append(skList[i])
     # end for fn
-
-    df = DataFrame(SKLIST, index=kList, columns=file_list)
+    collist=[]
+    for t in temp_list:
+        collist.append('T='+t)
+    #end for t
+    df = DataFrame(SKLIST, index=kList, columns=collist)
 
     plt.figure()
     df.plot()
+    plt.title("Structure factor")
+    plt.xlabel(r"$\vert \vec{k} \vert$")
+    plt.ylabel("S(k)")
     plt.show()
 
 # end __main__

@@ -5,8 +5,13 @@ import numpy
 import argparse
 from pandas import DataFrame
 
-#file_list = ["gr0.1.dat","gr0.5.dat","gr1.0.dat","gr3.0.dat"]
-file_list = ["gr.dat"]
+temp_list = ['0.1','0.5','1.5','2.5','3.5']
+prefix='gr'
+sufix='.dat'
+file_list=[]
+for t in temp_list:
+    file_list.append(prefix+t+sufix)
+# end for t
 
 parser = argparse.ArgumentParser(description='plot g(r)')
 #parser.add_argument("gr", help="output to analyze.")
@@ -43,6 +48,10 @@ for fn in file_list:
         GR[i].append(gr[i])
 # end for fn
 
+collist=[]
+for t in temp_list:
+    collist.append('T='+t)
+#end for t
 df = DataFrame(GR, index=r, columns=file_list)
 
 plt.figure()

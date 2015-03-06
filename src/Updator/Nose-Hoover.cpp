@@ -1,6 +1,6 @@
 #include "Nose-Hoover.h"
 
-NoseHooverThermostat::NoseHooverThermostat(ParticleSet pset, RealType T, RealType m, RealType Q, RealType b) : Thermostat(pset), _T(T), _m(m), _Q(Q), _b(b) {
+NoseHooverThermostat::NoseHooverThermostat(ParticleSet pset, RealType T, RealType m, RealType Q, RealType b, int nequil, bool keep) : Thermostat(pset,nequil,keep), _T(T), _m(m), _Q(Q), _b(b) {
     RealType _beta=1/T;
     int g=3*_pset.n+1;
 }

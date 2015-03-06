@@ -6,9 +6,9 @@
 #include "Particle/ParticlePool.h"
 #include "Simulation/PeriodicBox.h"
 #include "ForceField/Lennard-Jones.h"
+#include "ForceField/ForceField.h"
 #include "Updator/AndersonThermostat.h"
 #include "Updator/Nose-Hoover.h"
-#include "ForceField/ForceField.h"
 #include "Updator/VelocityVerlet.h"
 #include "Estimator/KineticEnergyEstimator.h"
 #include "Estimator/PotentialEstimator.h"
@@ -48,6 +48,7 @@ int main(int argc, char* argv[]){
     }
     
     string thermostatType=manager["thermostat"]["type"];
+    bool keep=( manager["thermostat"]["keep"]=="yes" );
     if (thermostatType=="Anderson"){
         // collision coupling strength eta*h shoud be around 0.01 (1%)
         eta=atof(manager["thermostat"]["eta"].c_str());
@@ -56,16 +57,13 @@ int main(int argc, char* argv[]){
         Q=atof(manager["thermostat"]["Q"].c_str());
     }
     
-    //PairCorrelationEstimator
-    RealType rmin=atof(manager["estimator"]["rmin"].c_str());
+    RealType rmin=atof(manager["estimator"]["rmin"].c_str()); // PairCorrelationEstimator
     RealType rmax=atof(manager["estimator"]["rmax"].c_str());
     RealType dr=atof(manager["estimator"]["dr"].c_str());
     
-    // StructureFactorEstimator
-    int maxK=atoi(manager["estimator"]["maxK"].c_str());
-    
-    // VelocityCorrelation
-    int tmax=atof(manager["estimator"]["tmax"].c_str());
+    int maxK=atoi(manager["estimator"]["maxK"].c_str()); // StructureFactorEstimator 
+    int tmax=atof(manager["estimator"]["tmax"].c_str()); // VelocityCorrelation
+    string traj=manager["output"]["trajectory"]; // Output files
     
     // generate particles
     ParticlePool globalPool(n); // memory allocated here
@@ -90,8 +88,8 @@ int main(int argc, char* argv[]){
     // tell the updator to update particle set with the force field inside the box 
       //  and give it a thermostat to control temperature
     Thermostat* therm;
-    if (thermostatType=="Anderson") therm = new AndersonThermostat(gPset,T,m,eta,h);
-    else if (thermostatType=="Nose-Hoover") therm = new NoseHooverThermostat(gPset,T,m,Q,b);
+    if (thermostatType=="Anderson") therm = new AndersonThermostat(gPset,T,m,eta,h,nequil,keep);
+    else if (thermostatType=="Nose-Hoover") therm = new NoseHooverThermostat(gPset,T,m,Q,b,nequil,keep);
     else therm = new Thermostat(gPset); // no thermostat
     
     Updator* updator;
@@ -106,19 +104,13 @@ int main(int argc, char* argv[]){
     pairCorr    = new PairCorrelationEstimator(gPset,box,rmax,dr,L);
     sk          = new StructureFactorEstimator(gPset,L,maxK);
     cv          = new VelocityCorrelation(gPset,tmax);
-    
-    // clear trajectory file
-    ofstream fs;
-    fs.open("myTrajectory.xyz",ios::out);
-    fs.close();
 
     RealType K,U,Ti; // Kinetic, Potential, Temperature (instantaneous)
     PosType  P(_MD_DIM,0.0), Gr((int)rmax/dr,0.0); // Momentum, Pair Correlation
     
     // perform MD simulation
-    for (int step=0; step < nequil; step++){ // equilibrate
-        updator->update(true);
-    }
+    for (int step=0; step < nequil; step++) updator->update(); // equilibrate 
+    gPset.clearFile(traj);
     for (int step=0; step < nsteps; step++){ // run
         // Estimators
         U=potential->scalarEvaluate();
@@ -128,11 +120,11 @@ int main(int argc, char* argv[]){
         sk->accumulate(step);
         cv->accumulate(step);
         Ti=2.*K/3./n;
-        
         cout << step << " ("<< U << " " << K << " " << Ti << " " << K+U << ")" << endl;
+        
         updator->update();
         
-        gPset.appendFile("myTrajectory.xyz");
+        gPset.appendFile(traj);
     }
     sk->finalize("sk.dat");
     cv->finalize("cv.dat");

@@ -3,6 +3,7 @@
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
-make
+make -j4
 
+export OMP_NUM_THREADS=4
 ./cppMD ../MD.inp

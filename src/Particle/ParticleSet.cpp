@@ -1,7 +1,7 @@
+#include "ParticleSet.h"
+
 #include <iostream>
 #include <fstream>
-
-#include "ParticleSet.h"
 
 void ParticleSet::appendFile(std::string filename){
     std::ofstream fs;
@@ -18,22 +18,8 @@ void ParticleSet::appendFile(std::string filename){
     fs.close();
 }
 
-/*
-void ParticleSet::readPositions(std::string filename){
+void ParticleSet::clearFile(std::string filename){
     std::ifstream fs;
-    fs.open(filename.c_str());
-    std::string line;
-    if (fs.is_open()){
-        while (getline(fs,line)){
-            std::istringstream buf(line);
-            std::istream_iterator<std::string> beg(buf), end;
-
-            // assuming: name, x, y, z, etc.
-            std::vector<std::string> tokens(beg, end);
-            for (int i=0;i<tokens.size();i++){
-                std::cout << tokens[i] << std::endl;
-            }
-        }
-    }
+    fs.open(filename.c_str(),std::ios::out);
     fs.close();
-}*/
+}
