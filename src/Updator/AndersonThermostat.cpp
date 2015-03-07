@@ -11,7 +11,6 @@ if ( _keep || _mystep<_nequil ){
     normal_distribution<RealType> normal(0,sqrt(_T/_m));
     uniform_real_distribution<RealType> rand(0,1);
     
-    
     RealType collisionProb = _eta*_h;
     for (int i=0;i<_pset.n;i++){
         if (rand(mt)<collisionProb){

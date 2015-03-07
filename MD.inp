@@ -1,6 +1,6 @@
 simulation:
-    nequil      100
-    nsteps      1000
+    nequil      200     # number of equilibration steps (no statistics collected)
+    nsteps      1000    # number of simulation steps 
     stepsize    0.01
     temperature 0.728
     
@@ -18,8 +18,8 @@ forcefield: # choices [ Lennard-Jones ]
     epsilon         1.0
     
 thermostat: # choices [ Anderson(eta),Nose-Hoover(b,Q),None ]
-    type    Anderson 
-    eta     3.0
+    type    None 
+    eta     1.0
     keep    yes      # keep applying the thermostat even after equilibration
     
 estimator:
@@ -31,7 +31,6 @@ estimator:
     maxK    5
     # for velocity correlation estimator
     tmax    100     # window size in number of steps
-    
     
 output:
     trajectory  myTrajectory.xyz

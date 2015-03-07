@@ -14,20 +14,6 @@ StructureFactorEstimator::StructureFactorEstimator(ParticleSet pset, RealType L,
     _mycumulation=0;
 }
 
-ComplexType StructureFactorEstimator::_rhoK(PosType k){
-
-    ComplexType rho(0,0);
-    ComplexType I(0,1);
-    for (int i=0;i<_pset.n;i++){
-        RealType dot=0;
-        for (int coord=0;coord<_MD_DIM;coord++){
-            dot+=_pset.ptcls[i]->r[coord]*k[coord];
-        }
-        rho+=std::exp(I*dot);
-    }
-    return rho;
-}
-
 std::vector<PosType> StructureFactorEstimator::_leagalKVecs(int maxK){
     std::vector<PosType> kVecs;
     for (int nx=0;nx<maxK;nx++){
@@ -41,6 +27,19 @@ std::vector<PosType> StructureFactorEstimator::_leagalKVecs(int maxK){
     return kVecs;
 }
 
+ComplexType StructureFactorEstimator::_rhoK(PosType k){
+
+    ComplexType rho(0,0);
+    ComplexType I(0,1);
+    for (int i=0;i<_pset.n;i++){
+        RealType dot=0;
+        for (int coord=0;coord<_MD_DIM;coord++){
+            dot+=_pset.ptcls[i]->r[coord]*k[coord];
+        }
+        rho+=std::exp(I*dot);
+    }
+    return rho;
+}
 
 void StructureFactorEstimator::accumulate(int t){
     #pragma omp parallel for schedule(static,1)

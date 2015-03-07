@@ -12,7 +12,8 @@ void PairCorrelationEstimator::appendFile(std::string filename,int t){
     for (int i=0;i<_pset.n;i++){
 	    for (int j=i+1;j<_pset.n;j++){
 	        r=_box->distance(i,j);
-	        gr[(int)(r/_dr)]+=1;
+            if (r>_rmin && r<_rmax)
+	            gr[(int)(r/_dr)]+=1;
 	    }
     }
     

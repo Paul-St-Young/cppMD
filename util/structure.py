@@ -5,7 +5,7 @@ from numpy.random import randn
 import matplotlib.pyplot as plt
 import argparse
 
-temp_list = ['0.1','0.5','1.5','2.5','3.5']
+temp_list = ['']
 prefix='sk'
 sufix='.dat'
 file_list=[]
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     df = DataFrame(SKLIST, index=kList, columns=collist)
 
     plt.figure()
-    df.plot()
+    df.plot(style=['-s','-o','-^','-v','-x'])
     plt.title("Structure factor")
     plt.xlabel(r"$\vert \vec{k} \vert$")
     plt.ylabel("S(k)")

@@ -5,7 +5,7 @@ import numpy
 import argparse
 from pandas import DataFrame
 
-temp_list = ['0.1','0.5','1.5','2.5','3.5']
+temp_list = ['']
 prefix='gr'
 sufix='.dat'
 file_list=[]
@@ -52,8 +52,11 @@ collist=[]
 for t in temp_list:
     collist.append('T='+t)
 #end for t
-df = DataFrame(GR, index=r, columns=file_list)
+df = DataFrame(GR, index=r, columns=collist)
 
 plt.figure()
-df.plot()
+df.plot(style=['-','--'])
+plt.title("g(r) for an LJ fluid")
+plt.xlabel("r")
+plt.ylabel("g(r)")
 plt.show()
