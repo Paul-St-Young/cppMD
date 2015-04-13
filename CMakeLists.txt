@@ -23,6 +23,7 @@ add_library(updator
 	${SRC_DIR}/Updator/AndersonThermostat.cpp
 	${SRC_DIR}/Updator/Nose-Hoover.cpp
 	${SRC_DIR}/Updator/VelocityVerlet.cpp
+    ${SRC_DIR}/Updator/Metropolis.cpp
 )
 
 add_library(estimator

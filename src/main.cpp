@@ -10,6 +10,7 @@
 #include "Updator/AndersonThermostat.h"
 #include "Updator/Nose-Hoover.h"
 #include "Updator/VelocityVerlet.h"
+#include "Updator/Metropolis.h"
 #include "Estimator/KineticEnergyEstimator.h"
 #include "Estimator/PotentialEstimator.h"
 #include "Estimator/MomentumEstimator.h"
@@ -93,7 +94,8 @@ int main(int argc, char* argv[]){
     else therm = new Thermostat(gPset); // no thermostat
     
     Updator* updator;
-    updator = new VelocityVerlet(&gPset,ff,box,therm); 
+    //updator = new VelocityVerlet(&gPset,ff,box,therm); 
+    updator = new Metropolis(&gPset,ff,box,therm,0.01,0.01,T); 
     updator->h=h;
 
     // throw in some estimators
@@ -114,20 +116,22 @@ int main(int argc, char* argv[]){
     for (int step=0; step < nsteps; step++){ // run
         // Estimators
         U=potential->scalarEvaluate();
-        K=kinetic->scalarEvaluate();
+        /*K=kinetic->scalarEvaluate();
         P=momentum->vectorEvaluate();
         pairCorr->appendFile("gr.dat",step);
         sk->accumulate(step);
         cv->accumulate(step);
         Ti=2.*K/3./n;
         cout << step << " ("<< U << " " << K << " " << Ti << " " << K+U << ")" << endl;
-        
+        */
+        cout << step << " ("<<U<<") " << endl;
         updator->update();
         
         gPset.appendFile(traj);
     }
-    sk->finalize("sk.dat");
-    cv->finalize("cv.dat");
+    //sk->finalize("sk.dat");
+    //cv->finalize("cv.dat");
+    cout << "Acceptance Rate: " << updator->acceptedSteps()/(RealType)nsteps << endl;
     
 	
     delete kinetic;

@@ -6,8 +6,6 @@
 
 #include "../Interface/TypeFactory.h"
 
-
-
 class Particle{
 
 public:

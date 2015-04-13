@@ -18,6 +18,8 @@ public:
         std::cerr << "Updator::update being called" << std::endl;
     };
 	RealType Rcut,h;
+	// specialized
+	virtual RealType acceptedSteps(){};
 };
 
 #endif

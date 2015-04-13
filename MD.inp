@@ -1,6 +1,6 @@
 simulation:
-    nequil      200     # number of equilibration steps (no statistics collected)
-    nsteps      1000    # number of simulation steps 
+    nequil      0     # number of equilibration steps (no statistics collected)
+    nsteps      100    # number of simulation steps 
     stepsize    0.01
     temperature 0.728
     
@@ -10,7 +10,7 @@ particles:
     
 box: # choices [ periodic ]
     type    periodic
-    size    4.2323167
+    size    4.0
     
 forcefield: # choices [ Lennard-Jones ]
     pairpotential   Lennard-Jones
