@@ -26,3 +26,17 @@ void ForceField::apply(){
 	}
 
 }
+
+void ForceField::apply(int i){
+    PosType dR(_MD_DIM,0.0);
+    PosType grad(_MD_DIM,0.0);
+    for (int j=0;j<_pset->n;j++){
+        if (i!=j){
+            dR=_box->displacement(i,j);
+            grad=_pp->gradient(dR);
+            for (int coord=0;coord<_MD_DIM;coord++){
+                _pset->ptcls[i]->a[coord]+=grad[coord]/_pset->ptcls[i]->m;
+            }
+        }
+    }
+}

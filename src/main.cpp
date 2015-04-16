@@ -28,7 +28,8 @@ int main(int argc, char* argv[]){
     }
 
     // initialize parameters
-    RealType sigma,epsilon,eta,b,Q,msigma;
+    RealType sigma,epsilon,eta,b,Q,msigma,dt;
+    bool useForce;
     InputManager manager(argv[1]);
     
     int nequil=atoi(manager["simulation"]["nequil"].c_str());
@@ -51,6 +52,8 @@ int main(int argc, char* argv[]){
     string updatorType=manager["updator"]["type"];
     if (updatorType=="Metropolis"){
         msigma=atof(manager["updator"]["sigma"].c_str());
+        useForce=(manager["updator"]["force"]=="yes");
+        dt=atof(manager["updator"]["dt"].c_str());
     }
     
     string thermostatType=manager["thermostat"]["type"];
@@ -106,7 +109,7 @@ int main(int argc, char* argv[]){
         updator->h=h;
     }
     else if (updatorType=="Metropolis")
-        updator = new Metropolis(&gPset,ff,box,therm,msigma,T);
+        updator = new Metropolis(&gPset,ff,box,therm,msigma,T,useForce,dt);
     else updator = new Updator(&gPset,ff,box,therm); // no updator
 
     // throw in some estimators

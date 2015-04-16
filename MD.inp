@@ -1,6 +1,6 @@
 simulation:
-    nequil      400     # number of equilibration steps (no statistics collected)
-    nsteps      2000    # number of simulation steps 
+    nequil      0     # number of equilibration steps (no statistics collected)
+    nsteps      100    # number of simulation steps 
     stepsize    0.01
     temperature 2.0
     
@@ -20,11 +20,13 @@ forcefield: # choices [ Lennard-Jones ]
 updator: # choices [ Verlet, Metropolis ]
     type    Metropolis
     sigma   0.055
+    force   yes     # use force-biased moves
+    dt      0.001
     
 thermostat: # choices [ Anderson(eta), Nose-Hoover(b,Q), None ]
     type    None 
     eta     1.0
-    keep    yes      # keep applying the thermostat even after equilibration
+    keep    yes     # keep applying the thermostat even after equilibration
     
 estimator:
     # for pair correlation estimator

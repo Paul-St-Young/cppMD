@@ -12,6 +12,7 @@ SimulationBox* _box;
 public:
 	ForceField(ParticleSet* pset, PairPotential* pp, SimulationBox* box) : _pset(pset), _pp(pp), _box(box){};
 	void apply();
+	void apply(int i);
 	ParticleSet* myPset(){return _pset;};
 	PairPotential* myPP(){return _pp;};
 };
