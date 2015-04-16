@@ -28,7 +28,7 @@ int main(int argc, char* argv[]){
     }
 
     // initialize parameters
-    RealType sigma,epsilon,eta,b,Q;
+    RealType sigma,epsilon,eta,b,Q,msigma;
     InputManager manager(argv[1]);
     
     int nequil=atoi(manager["simulation"]["nequil"].c_str());
@@ -46,6 +46,11 @@ int main(int argc, char* argv[]){
     if (pairPotentialType=="Lennard-Jones"){
         sigma=atof(manager["forcefield"]["sigma"].c_str());
         epsilon=atof(manager["forcefield"]["epsilon"].c_str());
+    }
+    
+    string updatorType=manager["updator"]["type"];
+    if (updatorType=="Metropolis"){
+        msigma=atof(manager["updator"]["sigma"].c_str());
     }
     
     string thermostatType=manager["thermostat"]["type"];
@@ -86,17 +91,23 @@ int main(int argc, char* argv[]){
     ForceField* ff;
     ff = new ForceField(&gPset,pp,box);
 
-    // tell the updator to update particle set with the force field inside the box 
+    // tell the updator to update particle set with the force field inside the box
       //  and give it a thermostat to control temperature
     Thermostat* therm;
-    if (thermostatType=="Anderson") therm = new AndersonThermostat(gPset,T,m,eta,h,nequil,keep);
-    else if (thermostatType=="Nose-Hoover") therm = new NoseHooverThermostat(gPset,T,Q,b,h,nequil,keep);
+    if (thermostatType=="Anderson") 
+        therm = new AndersonThermostat(gPset,T,m,eta,h,nequil,keep);
+    else if (thermostatType=="Nose-Hoover") 
+        therm = new NoseHooverThermostat(gPset,T,Q,b,h,nequil,keep);
     else therm = new Thermostat(gPset); // no thermostat
     
     Updator* updator;
-    //updator = new VelocityVerlet(&gPset,ff,box,therm); 
-    updator = new Metropolis(&gPset,ff,box,therm,0.01,0.01,T); 
-    updator->h=h;
+    if (updatorType=="Verlet"){
+        updator = new VelocityVerlet(&gPset,ff,box,therm);
+        updator->h=h;
+    }
+    else if (updatorType=="Metropolis")
+        updator = new Metropolis(&gPset,ff,box,therm,msigma,T);
+    else updator = new Updator(&gPset,ff,box,therm); // no updator
 
     // throw in some estimators
     Estimator *kinetic, *potential, *momentum, *pairCorr, *sk, *cv;
@@ -117,9 +128,10 @@ int main(int argc, char* argv[]){
         // Estimators
         U=potential->scalarEvaluate();
         /*K=kinetic->scalarEvaluate();
-        P=momentum->vectorEvaluate();
+        P=momentum->vectorEvaluate();*/
         pairCorr->appendFile("gr.dat",step);
         sk->accumulate(step);
+        /*
         cv->accumulate(step);
         Ti=2.*K/3./n;
         cout << step << " ("<< U << " " << K << " " << Ti << " " << K+U << ")" << endl;
@@ -129,9 +141,9 @@ int main(int argc, char* argv[]){
         
         gPset.appendFile(traj);
     }
-    //sk->finalize("sk.dat");
+    sk->finalize("sk.dat");
     //cv->finalize("cv.dat");
-    cout << "Acceptance Rate: " << updator->acceptedSteps()/(RealType)nsteps << endl;
+    cerr << "Acceptance Ratio: " << updator->acceptedSteps()/(RealType)(nsteps*n) << endl;
     
 	
     delete kinetic;

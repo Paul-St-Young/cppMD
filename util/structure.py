@@ -52,13 +52,16 @@ if __name__ == '__main__':
         for i in range(len(skList)):
             SKLIST[i].append(skList[i])
     # end for fn
+    """
     collist=[]
     for t in temp_list:
         collist.append('T='+t)
     #end for t
     df = DataFrame(SKLIST, index=kList, columns=collist)
+    """
+    df = DataFrame(SKLIST, index=kList, columns=["T=1.0"])
+    
 
-    plt.figure()
     df.plot(style=['-s','-o','-^','-v','-x'])
     plt.title("Structure factor")
     plt.xlabel(r"$\vert \vec{k} \vert$")

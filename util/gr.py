@@ -54,7 +54,6 @@ for t in temp_list:
 #end for t
 df = DataFrame(GR, index=r, columns=collist)
 
-plt.figure()
 df.plot(style=['-','--'])
 plt.title("g(r) for an LJ fluid")
 plt.xlabel("r")

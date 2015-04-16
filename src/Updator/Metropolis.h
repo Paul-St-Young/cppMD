@@ -12,8 +12,7 @@ int _accepted; // number of accepted moves
 RealType _beta; // 1/kT
 RealType _calcPotential(int i); // calculate the potential on particle i
 public:
-	Metropolis(ParticleSet* pset, ForceField* ff,SimulationBox* box,Thermostat* therm
-	    ,RealType mu, RealType sig, RealType T);
+	Metropolis(ParticleSet* pset, ForceField* ff,SimulationBox* box,Thermostat* therm, RealType sig, RealType T);
 	~Metropolis();
     void update();
     RealType acceptedSteps(){return _accepted;};

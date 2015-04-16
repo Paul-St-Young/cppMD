@@ -2,11 +2,11 @@
 
 using namespace std;
 
-Metropolis::Metropolis(ParticleSet* pset, ForceField* ff,SimulationBox* box,Thermostat* therm, RealType mu, RealType sig,RealType T):Updator(pset,ff,box,therm){
+Metropolis::Metropolis(ParticleSet* pset, ForceField* ff,SimulationBox* box,Thermostat* therm, RealType sig,RealType T):Updator(pset,ff,box,therm){
 
     random_device rd;
     _mt = new mt19937(rd());
-    _norm = new normal_distribution<RealType>(mu,sig);
+    _norm = new normal_distribution<RealType>(0,sig);
     
     _accepted=0;
     _beta = 1/T;
@@ -41,8 +41,7 @@ void Metropolis::update(){
             }
         }
         
-	}
-	
+	}	
 }
 
 RealType Metropolis::_calcPotential(int i){
