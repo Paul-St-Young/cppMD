@@ -28,6 +28,11 @@ void ForceField::apply(){
 }
 
 void ForceField::apply(int i){
+
+    // zero out acceleration
+    for (int coord=0;coord<_MD_DIM;coord++)
+        _pset->ptcls[i]->a[coord]=0;
+    
     PosType dR(_MD_DIM,0.0);
     PosType grad(_MD_DIM,0.0);
     for (int j=0;j<_pset->n;j++){

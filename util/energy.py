@@ -2,6 +2,7 @@
 
 import matplotlib.pyplot as plt
 from numpy import *
+from scipy import stats
 import sys
 
 import argparse
@@ -31,6 +32,7 @@ for line in f:
 
 npx=array(x)
 npE=array(E)
+print "E=",npE.mean(),"+-",stats.sem(npE)
 
 # --------- Plot trace ---------
 line1 = plt.plot(x,E,"r--", label="total energy", linestyle='-', color="black")

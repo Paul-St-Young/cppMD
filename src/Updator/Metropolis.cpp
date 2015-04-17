@@ -19,13 +19,14 @@ void Metropolis::update(){
 	    // for each particle
 	
 	        // evaluate energy on this particle
+	        PosType oldR;
+	        for (int coord=0;coord<_MD_DIM;coord++) oldR.push_back( _pset->ptcls[i]->r[coord] ); 
 	        RealType oldU=_calcPotential(i);
 	
 	        // try a move
-	        PosType trialMove;
 	        for (int coord=0;coord<_MD_DIM;coord++){
-	            trialMove.push_back((*_norm)(*_mt)); // Gaussian move
-                _pset->ptcls[i]->r[coord] += trialMove[coord];
+                _pset->ptcls[i]->r[coord] += (*_norm)(*_mt); // Gaussian move
+                _box->putInBox();
             }
             
             // evaluate the new energy
@@ -37,7 +38,7 @@ void Metropolis::update(){
                 _accepted += 1;
             } else { // put back particle if rejected
                 for (int coord=0;coord<_MD_DIM;coord++){
-                    _pset->ptcls[i]->r[coord] -= trialMove[coord];
+                    _pset->ptcls[i]->r[coord] = oldR[coord];
                 }
             }
             
@@ -64,28 +65,32 @@ RealType Metropolis::_updateWithForce(){
     x1.reserve(_MD_DIM);
     xa.reserve(_MD_DIM);
     xa1.reserve(_MD_DIM);
-    
-    _ff->apply(); // fill in all acceleration
-    
+      
     for (int i=0;i<_pset->n;i++){
 	// for each particle
-	    
-	    // evaluate energy on this particle
+	
+	    // save current position
+	    PosType oldR;
+        for (int coord=0;coord<_MD_DIM;coord++)
+            oldR.push_back( _pset->ptcls[i]->r[coord] );
+        
+        // evaluate energy on this particle
         RealType oldU=_calcPotential(i);
 	    
+	    _ff->apply(i); // update the force on this particle
 	    // save old position and force bias
         for (int coord=0;coord<_MD_DIM;coord++){
             x[coord] = _pset->ptcls[i]->r[coord];
-            xa[coord] = _pset->ptcls[i]->a[coord]/
-                            2./_pset->ptcls[i]->m*pow(_dt,2);
+            xa[coord] = 0.5*_pset->ptcls[i]->a[coord]*_dt*_dt;
         }
         
-        // try a move
+        // try a move with force bias
         PosType trialMove;
         for (int coord=0;coord<_MD_DIM;coord++){
-            trialMove.push_back((*_norm)(*_mt));
-            _pset->ptcls[i]->r[coord] += trialMove[coord]+xa[coord];
+            trialMove.push_back((*_norm)(*_mt)+xa[coord]);
+            _pset->ptcls[i]->r[coord] += trialMove[coord];
         }
+        _box->putInBox();
         
         // evaluate the new energy
         RealType newU=_calcPotential(i);
@@ -94,30 +99,29 @@ RealType Metropolis::_updateWithForce(){
 	    // save new position and force bias
         for (int coord=0;coord<_MD_DIM;coord++){
             x1[coord] = _pset->ptcls[i]->r[coord];
-            xa1[coord] = _pset->ptcls[i]->a[coord]/
-                            2./_pset->ptcls[i]->m*pow(_dt,2);
+            xa1[coord] = 0.5*_pset->ptcls[i]->a[coord]*_dt*_dt;
         }
         
         // calculate proposal ratio
         RealType lnT=0;
+        PosType backTrialMove;
         for (int coord=0;coord<_MD_DIM;coord++){
-            lnT += (x[coord]-x1[coord]+0.5*(xa[coord]-xa1[coord]))*(xa[coord]+xa1[coord]);
+            backTrialMove.push_back( x[coord]-x1[coord]-xa1[coord] );
+            lnT += pow(trialMove[coord],2)-pow(backTrialMove[coord],2);
             lnT /= pow(_sigma,2);
         }
         
         // decide acceptance
-        RealType lnA=-_beta*(newU-oldU)+lnT;
+        RealType lnA=-_beta*(newU-oldU);//+lnT;
         if (_uni(*_mt)<exp(lnA)){
             _accepted += 1;
         } else { // put back particle if rejected
             for (int coord=0;coord<_MD_DIM;coord++){
-                _pset->ptcls[i]->r[coord] -= trialMove[coord]+xa[coord];
+                _pset->ptcls[i]->r[coord] = oldR[coord];
             }
         }
         
     }
-    
-    
 }
 
 Metropolis::~Metropolis(){
