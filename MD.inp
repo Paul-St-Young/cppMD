@@ -1,13 +1,14 @@
 simulation:
     nequil      0     # number of equilibration steps (no statistics collected)
-    nsteps      100    # number of simulation steps 
+    nsteps      2000    # number of simulation steps 
     stepsize    0.01    # MD stepsize in reduced units, irrelavant for Metropolis move
     temperature 2.0     # Temperature in reduced units
     
 particles:
     n           64      # number of particles
     mass        48.0    # mass of particles
-    remove      1       # remove particle, 0 if not removing 
+    remove      1       # remove particle, 0 if not removing
+    vacFile     myVacancy.xyz
     
 box: # choices [ periodic ]
     type    periodic

@@ -49,9 +49,45 @@ PosType PeriodicBox::displacement(int i, int j){
     return dR;
 }
 
+PosType PeriodicBox::displacement(PosType v1, PosType v2){
+    PosType dR(_MD_DIM,0.0);
+    
+    // assume everyone's in box already
+    
+    // assess each coordinate
+    for (int coord=0;coord<_MD_DIM;coord++){
+        int min=0; // assume left image is cloest
+        // assess 3 images
+        RealType dLeft =v2[coord]-v1[coord]-_L;
+        RealType dHere =v2[coord]-v1[coord];
+        if (std::abs(dHere)<std::abs(dLeft)) min=1;
+        RealType dRight=v2[coord]-v1[coord]+_L;
+        if (std::abs(dRight)<std::abs(dLeft) && std::abs(dRight)<std::abs(dHere)) min=2;
+        
+        // assign minimum image
+        if (min==0) dR[coord]=dLeft;
+        else if (min==1) dR[coord]=dHere;
+        else if (min==2) dR[coord]=dRight;
+        else{
+            std::cerr << "Minimum Image Error" << std::endl;
+            std::exit(1);
+        }
+        
+    }
+    
+    return dR;
+}
+
 RealType PeriodicBox::distance(int i, int j){
     RealType d2=0.0;
     PosType dR=displacement(i,j);
+    for (int i=0;i<_MD_DIM;i++) d2+=dR[i]*dR[i];
+    return std::sqrt(d2);
+}
+
+RealType PeriodicBox::distance(PosType v1, PosType v2){
+    RealType d2=0.0;
+    PosType dR=displacement(v1,v2);
     for (int i=0;i<_MD_DIM;i++) d2+=dR[i]*dR[i];
     return std::sqrt(d2);
 }

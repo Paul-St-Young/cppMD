@@ -17,6 +17,7 @@
 #include "Estimator/PairCorrelationEstimator.h"
 #include "Estimator/StructureFactorEstimator.h"
 #include "Estimator/VelocityCorrelation.h"
+#include "Estimator/VacancyEstimator.h"
 
 using namespace std;
 
@@ -74,6 +75,7 @@ int main(int argc, char* argv[]){
     int maxK=atoi(manager["estimator"]["maxK"].c_str()); // StructureFactorEstimator 
     int tmax=atof(manager["estimator"]["tmax"].c_str()); // VelocityCorrelation
     string traj=manager["output"]["trajectory"]; // Output files
+    string vacTraj=manager["particles"]["vacFile"];
     
     // generate particles
     ParticlePool globalPool(n); // memory allocated here
@@ -115,13 +117,14 @@ int main(int argc, char* argv[]){
     else updator = new Updator(&gPset,ff,box,therm); // no updator
 
     // throw in some estimators
-    Estimator *kinetic, *potential, *momentum, *pairCorr, *sk, *cv;
+    Estimator *kinetic, *potential, *momentum, *pairCorr, *sk, *cv, *vac;
     kinetic     = new KineticEnergyEstimator(gPset);
     potential   = new PotentialEstimator(gPset,pp,box);
     momentum    = new MomentumEstimator(gPset);
     pairCorr    = new PairCorrelationEstimator(gPset,box,rmax,dr,L);
     sk          = new StructureFactorEstimator(gPset,L,maxK);
     cv          = new VelocityCorrelation(gPset,tmax);
+    vac         = new VacancyEstimator(gPset,64,box,vacTraj);
 
     RealType K,U,Ti; // Kinetic, Potential, Temperature (instantaneous)
     PosType  P(_MD_DIM,0.0), Gr((int)rmax/dr,0.0); // Momentum, Pair Correlation
@@ -136,12 +139,17 @@ int main(int argc, char* argv[]){
         P=momentum->vectorEvaluate();*/
         pairCorr->appendFile("gr.dat",step);
         sk->accumulate(step);
+        PosType vec; vec.reserve(_MD_DIM);
+        vec = vac->vectorEvaluate();
+        for (int coord=0;coord<_MD_DIM;coord++)
+            cout << vec[coord] << " ";
+        cout << endl;
         /*
         cv->accumulate(step);
         Ti=2.*K/3./n;
         cout << step << " ("<< U << " " << K << " " << Ti << " " << K+U << ")" << endl;
         */
-        cout << step << " ("<<U<<") " << endl;
+        //cout << step << " ("<<U<<") " << endl;
         updator->update();
         
         gPset.appendFile(traj);
@@ -149,7 +157,6 @@ int main(int argc, char* argv[]){
     sk->finalize("sk.dat");
     //cv->finalize("cv.dat");
     cerr << "Acceptance Ratio: " << updator->acceptedSteps()/(RealType)((nsteps+nequil)*n) << endl;
-    
 	
     delete kinetic;
     delete potential;
