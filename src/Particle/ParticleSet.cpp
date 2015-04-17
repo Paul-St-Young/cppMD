@@ -18,6 +18,13 @@ void ParticleSet::appendFile(std::string filename){
     fs.close();
 }
 
+void ParticleSet::removeParticle(int i){
+    for (int j=i;j<n-1;j++){
+        ptcls[j]=ptcls[j+1];
+    }
+    n-=1;
+}
+
 void ParticleSet::clearFile(std::string filename){
     std::ifstream fs;
     fs.open(filename.c_str(),std::ios::out);

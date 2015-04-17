@@ -39,6 +39,7 @@ int main(int argc, char* argv[]){
     
     int n=atoi(manager["particles"]["n"].c_str());
     RealType m=atoi(manager["particles"]["mass"].c_str());
+    int nRemove=atoi(manager["particles"]["remove"].c_str());
     
     string boxType=manager["box"]["type"];
     RealType L=atof(manager["box"]["size"].c_str());
@@ -82,6 +83,7 @@ int main(int argc, char* argv[]){
     
     // put in global particle set
     ParticleSet gPset(globalPool.myParticles());
+    if (nRemove!=0) gPset.removeParticle(nRemove);
 
     // tell box to manage pset
     SimulationBox* box;
@@ -146,7 +148,7 @@ int main(int argc, char* argv[]){
     }
     sk->finalize("sk.dat");
     //cv->finalize("cv.dat");
-    cerr << "Acceptance Ratio: " << updator->acceptedSteps()/(RealType)(nsteps*n) << endl;
+    cerr << "Acceptance Ratio: " << updator->acceptedSteps()/(RealType)((nsteps+nequil)*n) << endl;
     
 	
     delete kinetic;

@@ -16,6 +16,8 @@ public:
 		n=list.size();
 	}
 	
+	void removeParticle(int i);
+	
 	//typedef ParticleList::iterator iterator;
 	//iterator begin(){return ptcls.begin();};
 	//iterator end(){return ptcls.end();};
